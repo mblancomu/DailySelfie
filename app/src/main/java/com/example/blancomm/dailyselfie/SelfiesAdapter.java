@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Environment;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ public class SelfiesAdapter extends RecyclerView.Adapter<SelfiesAdapter.ViewHold
 
     private Context mContext;
     private List<SelfieInfo> mItems = new ArrayList<SelfieInfo>();
+    private String TAG = SelfiesAdapter.class.getSimpleName();
 
     public SelfiesAdapter(Context context) {
         mContext = context;
@@ -35,7 +37,7 @@ public class SelfiesAdapter extends RecyclerView.Adapter<SelfiesAdapter.ViewHold
             });
 
             for (File file : selfieFiles) {
-                SelfieInfo selfieRecord = new SelfieInfo(file.getAbsolutePath(), file.getName());
+                SelfieInfo selfieRecord = new SelfieInfo(file.getAbsolutePath(), file.getName(), null);
                 mItems.add(selfieRecord);
             }
         }
@@ -98,6 +100,8 @@ public class SelfiesAdapter extends RecyclerView.Adapter<SelfiesAdapter.ViewHold
 
     public void updateResults(SelfieInfo item, Context context) {
         this.mContext = context;
+
+        Log.e(TAG,"Llega: " + item.getDisplayName());
 
         mItems.add(item);
         //Triggers the list update

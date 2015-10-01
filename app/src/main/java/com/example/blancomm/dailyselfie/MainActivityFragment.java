@@ -41,7 +41,6 @@ public class MainActivityFragment extends Fragment {
 
     public void updateSelfiesList(SelfieInfo item){
 
-        Log.e(TAG,"Llega: " + item.getDisplayName());
         mAdapter.updateResults(item, getActivity());
     }
 }

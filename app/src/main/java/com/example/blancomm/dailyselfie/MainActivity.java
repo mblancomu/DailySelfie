@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -40,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
         instantiateObjects();
 
-        fragment = new MainActivityFragment();
+        fragment = (MainActivityFragment)getSupportFragmentManager().findFragmentById(R.id.fragment);
 
         createSelfieAlarm();
     }
@@ -116,13 +117,14 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE &&  resultCode != RESULT_CANCELED) {
             // Rename temporary file as yyyyMMdd_HHmmss.jpg
+            //Bitmap photo = (Bitmap) data.getExtras().get("data");
             File photoFile = new File(mCurrentPhotoPath);
             File selfieFile = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), mCurrentSelfieName + ".jpg");
             photoFile.renameTo(selfieFile);
 
-            SelfieInfo selfie = new SelfieInfo(Uri.fromFile(selfieFile).getPath(), mCurrentSelfieName);
+            SelfieInfo selfie = new SelfieInfo(Uri.fromFile(selfieFile).getPath(), mCurrentSelfieName, null);
             Log.d(LOG_TAG, selfie.getPath() + " - " + selfie.getDisplayName());
             fragment.updateSelfiesList(selfie);
 

@@ -14,9 +14,10 @@ public class SelfieInfo {
     private Date mDate;
     private boolean mSelected;
 
-    public SelfieInfo(String path, String name) {
+    public SelfieInfo(String path, String name, Date date) {
         mPath = path;
         mName = name;
+        mDate = date;
         mSelected = false;
     }
 
@@ -36,6 +37,14 @@ public class SelfieInfo {
 
     public void setSelected(boolean selected) {
         mSelected = selected;
+    }
+
+    public Date getmDate() {
+        return mDate;
+    }
+
+    public void setmDate(Date mDate) {
+        this.mDate = mDate;
     }
 
     @Override
