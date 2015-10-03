@@ -1,20 +1,16 @@
-package com.example.blancomm.dailyselfie;
+package com.example.blancomm.dailyselfie.ui;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import com.example.blancomm.dailyselfie.utils.ImageHelper;
+import com.example.blancomm.dailyselfie.R;
 
 /**
  * A placeholder fragment containing a simple view.

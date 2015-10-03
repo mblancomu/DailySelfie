@@ -1,38 +1,41 @@
-package com.example.blancomm.dailyselfie;
+package com.example.blancomm.dailyselfie.ui;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.example.blancomm.dailyselfie.R;
+import com.example.blancomm.dailyselfie.model.SelfieInfo;
+import com.example.blancomm.dailyselfie.notification.SelfieNotification;
+
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements DialogName.EditNameDialogListener{
 
     private MainActivityFragment fragment;
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
     private static final int REQUEST_IMAGE_CAPTURE = 1;
-    private static final long INTERVAL_TWO_MINUTES = 2 * 60 * 1000L;
+    private static final long INTERVAL_MINUTES = 2 * 60 * 1000L;
 
-    private String mCurrentSelfieName;
-    private String mCurrentPhotoPath;
+    private String mSelfieName;
+    private String mPhotoPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                dispatchTakePictureIntent();
+                showEditDialog();
             }
         });
     }
@@ -84,30 +87,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private File createImageFile() throws IOException {
-        // Create an image file name
-        mCurrentSelfieName = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+
         File imageFile = File.createTempFile(
-                mCurrentSelfieName,
+                mSelfieName,
                 ".jpg",
                 getExternalFilesDir(null));
 
-        mCurrentPhotoPath = imageFile.getAbsolutePath();
+        mPhotoPath = imageFile.getAbsolutePath();
         return imageFile;
     }
 
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
+
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            // Create the File where the photo should go
+
             File photoFile = null;
             try {
                 photoFile = createImageFile();
             } catch (IOException ex) {
-                // Error occurred while creating the File
+
             }
 
-            // Continue only if the File was successfully created
             if (photoFile != null) {
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
@@ -118,19 +119,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE &&  resultCode != RESULT_CANCELED) {
-            // Rename temporary file as yyyyMMdd_HHmmss.jpg
-            //Bitmap photo = (Bitmap) data.getExtras().get("data");
-            File photoFile = new File(mCurrentPhotoPath);
-            File selfieFile = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), mCurrentSelfieName + ".jpg");
+
+            File photoFile = new File(mPhotoPath);
+            File selfieFile = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), mSelfieName + ".jpg");
             photoFile.renameTo(selfieFile);
 
-            SelfieInfo selfie = new SelfieInfo(Uri.fromFile(selfieFile).getPath(), mCurrentSelfieName, null);
-            Log.d(LOG_TAG, selfie.getPath() + " - " + selfie.getDisplayName());
+            SelfieInfo selfie = new SelfieInfo(Uri.fromFile(selfieFile).getPath(), mSelfieName);
             fragment.updateSelfiesList(selfie);
 
         } else {
 
-            File photoFile = new File(mCurrentPhotoPath);
+            File photoFile = new File(mPhotoPath);
             photoFile.delete();
         }
     }
@@ -141,8 +140,28 @@ public class MainActivity extends AppCompatActivity {
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                SystemClock.elapsedRealtime() + INTERVAL_TWO_MINUTES,
-                INTERVAL_TWO_MINUTES,
+                SystemClock.elapsedRealtime() + INTERVAL_MINUTES,
+                INTERVAL_MINUTES,
                 pendingIntent);
     }
+
+    @Override
+    public void onFinishEditDialog(String inputText) {
+
+        mSelfieName = inputText + "_" + getCurrentDate();
+        dispatchTakePictureIntent();
+    }
+
+    private void showEditDialog() {
+        FragmentManager fm = getSupportFragmentManager();
+        DialogName editNameDialog = new DialogName();
+        editNameDialog.show(fm, "fragment_edit_name");
+        editNameDialog.setCancelable(true);
+    }
+
+    private Date getCurrentDate(){
+        Calendar calendar = Calendar.getInstance();
+        return calendar.getTime();
+    }
+
 }

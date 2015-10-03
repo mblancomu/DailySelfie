@@ -1,4 +1,4 @@
-package com.example.blancomm.dailyselfie;
+package com.example.blancomm.dailyselfie.notification;
 
 import android.annotation.TargetApi;
 import android.app.Notification;
@@ -10,6 +10,9 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
+
+import com.example.blancomm.dailyselfie.R;
+import com.example.blancomm.dailyselfie.ui.MainActivity;
 
 public class SelfieNotification extends BroadcastReceiver {
 
@@ -31,7 +34,7 @@ public class SelfieNotification extends BroadcastReceiver {
         // Build notification
         Notification.Builder notificationBuilder = new Notification.Builder(context)
                 .setTicker("The selfie hour is here!!!")
-                .setSmallIcon(android.R.drawable.ic_menu_camera)
+                .setSmallIcon(R.drawable.ic_add_alert_black_24dp)
                 .setAutoCancel(true)
                 .setContentTitle(context.getString(R.string.app_name))
                 .setContentText("Is the hour of the new selfie!!! Come on!!!")

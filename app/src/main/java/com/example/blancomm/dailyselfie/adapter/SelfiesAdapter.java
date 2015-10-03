@@ -1,4 +1,4 @@
-package com.example.blancomm.dailyselfie;
+package com.example.blancomm.dailyselfie.adapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,9 +13,16 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.blancomm.dailyselfie.R;
+import com.example.blancomm.dailyselfie.model.SelfieInfo;
+import com.example.blancomm.dailyselfie.ui.DetailActivity;
+import com.example.blancomm.dailyselfie.utils.ImageHelper;
+
 import java.io.File;
 import java.io.FilenameFilter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class SelfiesAdapter extends RecyclerView.Adapter<SelfiesAdapter.ViewHolder> {
@@ -37,7 +44,7 @@ public class SelfiesAdapter extends RecyclerView.Adapter<SelfiesAdapter.ViewHold
             });
 
             for (File file : selfieFiles) {
-                SelfieInfo selfieRecord = new SelfieInfo(file.getAbsolutePath(), file.getName(), null);
+                SelfieInfo selfieRecord = new SelfieInfo(file.getAbsolutePath(), file.getName());
                 mItems.add(selfieRecord);
             }
         }
@@ -54,17 +61,9 @@ public class SelfiesAdapter extends RecyclerView.Adapter<SelfiesAdapter.ViewHold
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
         final SelfieInfo item = mItems.get(i);
 
-        viewHolder.mSelected.setChecked(item.getSelected());
-        viewHolder.mSelected.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                item.setSelected(isChecked);
-            }
-        });
-
         ImageHelper.setImageFromFilePath(item.getPath(), viewHolder.mThumbnail);
-        viewHolder.mTitle.setText(item.getDisplayName());
-        viewHolder.mDate.setText("12-06-2015");
+        viewHolder.mTitle.setText(item.getmName().substring(0,item.getmName().lastIndexOf("_")));
+        viewHolder.mDate.setText(item.getmName().substring(item.getmName().lastIndexOf("_")+1));
         viewHolder.mThumbnail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,22 +85,18 @@ public class SelfiesAdapter extends RecyclerView.Adapter<SelfiesAdapter.ViewHold
 
         private TextView mTitle, mDate;
         private ImageView mThumbnail;
-        private CheckBox mSelected;
 
         ViewHolder(View v) {
             super(v);
             mThumbnail = (ImageView) v.findViewById(R.id.thumbnail_selfie);
             mTitle = (TextView) v.findViewById(R.id.title_card);
             mDate = (TextView) v.findViewById(R.id.date);
-            mSelected = (CheckBox) v.findViewById(R.id.checkBox);
 
         }
     }
 
     public void updateResults(SelfieInfo item, Context context) {
         this.mContext = context;
-
-        Log.e(TAG,"Llega: " + item.getDisplayName());
 
         mItems.add(item);
         //Triggers the list update

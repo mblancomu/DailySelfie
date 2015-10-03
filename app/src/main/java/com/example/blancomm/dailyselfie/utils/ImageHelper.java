@@ -1,4 +1,4 @@
-package com.example.blancomm.dailyselfie;
+package com.example.blancomm.dailyselfie.utils;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -28,6 +28,6 @@ public class ImageHelper {
     }
 
     public static void setImageFromFilePath(String imagePath, ImageView imageView) {
-        setImageFromFilePath(imagePath, imageView, 120, 160);
+        setImageFromFilePath(imagePath, imageView, 300, 500);
     }
 }
