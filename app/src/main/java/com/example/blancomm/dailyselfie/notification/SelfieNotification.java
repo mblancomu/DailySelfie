@@ -34,7 +34,7 @@ public class SelfieNotification extends BroadcastReceiver {
         // Build notification
         Notification.Builder notificationBuilder = new Notification.Builder(context)
                 .setTicker("The selfie hour is here!!!")
-                .setSmallIcon(R.drawable.ic_add_alert_black_24dp)
+                .setSmallIcon(R.drawable.ic_photo_camera_white_24dp)
                 .setAutoCancel(true)
                 .setContentTitle(context.getString(R.string.app_name))
                 .setContentText("Is the hour of the new selfie!!! Come on!!!")
